@@ -1,7 +1,7 @@
 /**
- * @description Find tests calling a function named "pressActionKey" transitively
+ * @description Find tests that call a function named "pressActionKey"
  * @kind problem
- * @id javascript/tests-calling-press-action-key-transitively
+ * @id javascript/tests-calling-press-action-key
  * @problem.severity recommendation
  */
 import javascript
@@ -19,16 +19,16 @@ predicate isTest(Function test) {
 }
 
 /**
- * Holds if `caller` contains a call to `callee` with a specific name, transitively.
+ * Holds if `test` contains a call to a function named "pressActionKey".
  */
-predicate callsFunctionWithNameTransitively(Function caller, string functionName) {
-  exists(DataFlow::CallNode+ call |
-    call.getEnclosingFunction() = caller and
-    call.getACallee().getName() = functionName
+predicate callsPressActionKey(Function test) {
+  exists(DataFlow::CallNode call |
+    call.getEnclosingFunction() = test and
+    call.getACallee().getName() = "pressActionKey"
   )
 }
 
 from Function test
 where isTest(test) and
-      callsFunctionWithNameTransitively(test, "pressActionKey")
+      callsPressActionKey(test)
 select test
